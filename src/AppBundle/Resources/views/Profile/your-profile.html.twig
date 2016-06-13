@@ -1,0 +1,221 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block bodyHeader %}
+    {% include('AppBundle:Common:header.html.twig') with { active :'your_profile' } %}
+{% endblock %}
+
+{% block bodyContent %}
+    <div class="container-fluid content-breather-small" id="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <h4>{% trans %}Your Profile{% endtrans %}</h4>
+                </div>
+                <!-- End of column one -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('homepage') }}">{% trans %}
+                                Home{% endtrans %}</a></li>
+                        <li class="active">{% trans %}Your Profile{% endtrans %}</li>
+                    </ol>
+                </div>
+                <!-- End of column two -->
+            </div>
+            <!-- End of row -->
+        </div>
+        <!-- End of container -->
+    </div><!-- End of fluid container -->
+
+    <div class="container padB-25">
+        <div class="row line-list">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-xs-4">
+                        {{ app.session.get('isInvestor')|default(0) ? 'Your name'|trans:'Company name'|trans}}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ app.session.get('isInvestor')|default(0) ? profile.display_name|default(0):profile.company_name|default(0) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Email{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ profile.email }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Password{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        <a class="btn branding-background" href="#modal-change-password" data-toggle="modal"
+                           data-target="#modal-change-password">{% trans %}Change Password{% endtrans %}</a>
+                    </div>
+                </div>
+                {% if app.session.get('api/user').user_id is defined and app.session.get('isInvestor')|default(0) %}
+                    <div class="row">
+                        <div class="col-xs-4">
+                            {% trans %}DOB{% endtrans %}
+                        </div>
+                        <div class="col-xs-8">
+                            {{ profile.date_of_birth|default(0) }}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Tax ID number{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ profile.tax_id_number|default(0) }}
+                    </div>
+                </div>
+                {#{% if app.session.get('api/user').user_id is defined and app.session.get('isInvestor')|default(0) %}
+                    <div class="row">
+                        <div class="col-xs-4">
+                            {% trans %}Nationality{% endtrans %}
+                        </div>
+                        <div class="col-xs-8">
+                            {{ profile.nationality|default(0) }}
+                        </div>
+                    </div>
+                {% endif %}#}
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Address{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ app.session.get('isInvestor')|default(0) ? profile.address|default(0): profile.company_address|default(0) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Neighborhood{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ profile.neighborhood|default(0) }}
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}City{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ app.session.get('isInvestor')|default(0) ? profile.city|default(0):profile.office_address_city|default(0) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}State{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ profile.state|default(0) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Country{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ app.session.get('isInvestor')|default(0) ? profile.country|default(0):profile.office_address_country|default(0) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Zip Code{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ profile.zip|default(0) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        {% trans %}Phone Number{% endtrans %}
+                    </div>
+                    <div class="col-xs-8">
+                        {{ app.session.get('isInvestor')|default(0) ? profile.phone|default(0): profile.company_phone|default(0) }}
+                    </div>
+                </div>
+                {% if app.session.get('api/user').user_id is defined and app.session.get('isInvestor')|default(0) %}
+                    {#<div class="row">
+                        <div class="col-xs-4">
+                            {% trans %}Bank Account Number{% endtrans %}
+                        </div>
+                        <div class="col-xs-8">
+                            {{ profile.bank_account_id|default(0) }}
+                        </div>
+                    </div>#}
+                    <div class="row">
+                        <div class="col-xs-4">
+                            {% trans %}Scanned ID{% endtrans %}
+                        </div>
+                        <div class="col-xs-8">
+                            <a href="{{ profile.file_scan_id['s3_url']|default(0) }}"
+                               tilte="{% trans %}Scanned ID{% endtrans %}">{{ profile.file_scan_id['name']|default(0) }}</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <p class="text-center">
+            <a href="{{ path('edit_profile') }}" class="btn branding-background btn-lg">{% trans %}Edit Profile{% endtrans %}</a>
+        </p>
+    </div><!-- End of container -->
+
+    <!-- begin:modal-change-password -->
+    <div class="modal fade" id="modal-change-password" tabindex="-1" role="dialog"
+         aria-labelledby="modal-change-password" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{% trans %}Change password{% endtrans %}</h4>
+                </div>
+                <form action="{{ path('your_profile') }}" role="form" name="changePasswordForm" id="changePasswordForm" method="post">
+                    <div class="modal-body">
+                        <div class="form-group input-group">
+                            <label for="current_password">{% trans %}Old password{% endtrans %}</label>
+                            <input id="current_password" name="current_password" type="password" class="form-control input-lg"
+                                   data-parsley-required="true" placeholder="{% trans %}Enter old password{% endtrans %}">
+                        </div>
+                        <div class="form-group input-group">
+                            <label for="new_password">{% trans %}New password{% endtrans %}</label>
+                            <input id="new_password" name="new_password" type="password" class="form-control input-lg"
+                                   data-parsley-required="true" placeholder="{% trans %}Enter new password{% endtrans %}">
+                        </div>
+                        <div class="form-group input-group">
+                            <label for="new_password_again">{% trans %}Confirm password{% endtrans %}</label>
+                            <input id="new_password_again" name="new_password_again" type="password"
+                                   class="form-control input-lg" data-parsley-required="true"
+                                   data-parsley-equalto="#new_password" placeholder="{% trans %}Enter confirm password{% endtrans %}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" id="changePasswordBtn" class="btn btn-block branding-background btn-lg"
+                               value="{% trans %}Confirm{% endtrans %}">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end:modal-change-password -->
+
+{% endblock %}
+
+{% block addMoreJS %}
+    <script src="{{ asset('bundles/cvgooseberry/js/bootstrap/bootstrap.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/css3-animate-it.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/bootstrap-hover-dropdown.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/modernizr.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/Slickform.js') }}"></script>
+    <!-- Google maps api -->
+    <script src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry&v=3.7"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/maps.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/scripts.js') }}"></script>
+
+{% endblock %}

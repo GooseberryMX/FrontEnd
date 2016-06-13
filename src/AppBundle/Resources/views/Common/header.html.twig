@@ -1,0 +1,127 @@
+{% if active is not defined %}
+    {% set active = '' %}
+{% endif %}
+<nav class="navbar navbar-default custom-header" role="navigation">
+ 	<div class="container">
+        <div id="languages" class="clearfix">            
+            <select class="form-control">
+                <option value="en">{% trans %}English{% endtrans %}</option>
+                <option value="ru">{% trans %}Español{% endtrans %}</option>
+            </select>
+        </div>
+              
+		<!-- This section of code controls the expand and collapse of the mobile navigation,
+		and forms the button displayed in touch devices -->
+
+		<div class="navbar-header">
+		    <button type="button" class="navbar-toggle" 
+		       data-toggle="collapse" data-target="#navbar-mobile">
+		        <span class="sr-only">{% trans %}Toggle navigation{% endtrans %}</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		    </button>
+		    
+		    <!-- Branding for the nav if required, this theme uses this area as the header -->
+		      
+			<a class="navbar-brand animated bounceInDown go" href="{{ path('homepage') }}">
+              	<img src="{{asset('bundles/app/images/logo-gooseberry.png')}}" alt="gooseberry" class="mw60px">
+			</a>
+               
+        </div><!-- End of navbar header -->
+        
+        <!-- Actual navigation items, dont forget to move the active class when building new pages -->
+
+		<div class="collapse navbar-collapse" id="navbar-mobile">
+            {% if app.session.get('authenticated') == false %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="{% if active == 'home' %}active{% else %}inactive{% endif %}">
+                        <a href="{{ path('homepage') }}"><span data-icon="&#xe02c;" class="icon"></span> {% trans %}Home{% endtrans %}</a>
+                    </li>
+                    <li>
+                        <a href="#modal-signin" class="signin" data-toggle="modal" data-target="#modal-signin"><span class="fa fa-user"></span> {% trans %}Sign In{% endtrans %}</a>
+                    </li>
+                    <li>
+                        <a href="#modal-signup" class="signup" data-toggle="modal" data-target="#modal-signup"><i class="fa fa-pencil"></i> {% trans %}Sign Up{% endtrans %}</a>
+                    </li>
+                </ul>
+            {% else %}
+            <ul class="nav navbar-nav navbar-right">
+                    <li class="{% if active == 'home' %}active{% else %}inactive{% endif %}">
+                        <a href="{{ path('homepage') }}"><span data-icon="&#xe02c;" class="icon"></span> {% trans %}Home{% endtrans %}</a>
+                    </li>
+                    <li class="{% if active == 'your_profile' %}active{% else %}inactive{% endif %} animatedParent">
+                        <a href="{{ path('your_profile') }}">
+                            <span data-icon="&#xe057;" class="icon"></span>
+                            {% trans %}Your Profile{% endtrans %}
+                        </a>
+                    </li>
+                        <li class="dropdown dropdown-caret {% if active == 'equity' or active == 'equity_overview' or active == 'apply_equity' or active == 'your_projects' %}active{% else %}inactive{% endif %} animatedParent">
+                            <a href="" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">
+                                <span data-icon="&#xe026;" class="icon"></span>
+                                    {% trans %}Equity{% endtrans %}
+                            </a>
+                            <ul class="dropdown-menu animated fadeInUpShort go" role="menu">
+                                <li class="{% if active == 'equity' or active == 'equity_overview' %}active{% else %}inactive{% endif %}"><a href="{{ path('equity') }}">{% trans %}Equity{% endtrans %}</a></li>
+                                <li class="{% if active == 'apply_equity' %}active{% else %}inactive{% endif %}"><a href="{{ path('equity') }}">{% trans %}Apply Equity{% endtrans %}</a></li>
+                                <li class="{% if active == 'your_projects' %}active{% else %}inactive{% endif %}"><a href="{{ path('your_projects') }}">{% trans %}Your Projects{% endtrans %}</a></li>
+                            </ul>
+                        </li><!-- End of dropdown section -->
+
+                        <!-- Dropdown starts -->
+                        <li class="dropdown dropdown-caret {% if active == 'loans' or active == 'loan_overview' or active == 'apply_loan' or active == 'your_loans' %}active{% else %}inactive{% endif %} animatedParent">
+                            <a href="" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">
+                                <span class="fa fa-money"></span>
+                                    {% trans %}Loans{% endtrans %}
+                            </a>
+                            <ul class="dropdown-menu animated fadeInUpShort go" role="menu">
+                                <li class="{% if active == 'loans' or active == 'loan_overview' %}active{% else %}inactive{% endif %}"><a href="{{ path('loans') }}">{% trans %}Loans{% endtrans %}</a></li>
+                                <li class="{% if active == 'apply_loan' %}active{% else %}inactive{% endif %}"><a href="{{ path('apply_loan') }}">{% trans %}Apply Loan{% endtrans %}</a></li>
+                                <li class="{% if active == 'your_loans' %}active{% else %}inactive{% endif %}"><a href="{{ path('your_loans') }}">{% trans %}Your Loans{% endtrans %}</a></li>
+                            </ul>
+                        </li><!-- End of dropdown section -->
+
+                        
+                        <li class="{% if active == 'watch_list' %}active{% else %}inactive{% endif %}">
+                            <a href="{{ path('watch_list') }}"><span data-icon="&#xe031;" class="icon"></span> {% trans %}Watch List{% endtrans %}</a>
+                        </li>
+                    <li>
+                        <a href="{{ path('logout') }}" class="signout" >
+                            {% if bc is defined %}
+                                <span class="img-signined"><img class ='profile-image' src=""></span>
+                            {% else %}
+                                <span class="img-signined"><i class="fa fa-user"></i></span>
+                            {% endif %}
+                            {% trans %}Log Out{% endtrans %}
+                        </a>
+                    </li>
+            </ul>
+            {% endif %}
+		</div><!-- End of nav-collapse -->                
+	</div><!-- End of container class -->
+</nav><!-- End of navigation -->
+
+{% if success_msg is defined and success_msg is not empty %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p>{{ success_msg }}</p>
+    </div>
+{% endif %}
+
+{% if app.session.flashBag.has('success') %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {% for flashMessage in app.session.flashbag.get('success') %}
+            <p>{{ flashMessage }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+<!-- Error message -->
+{% if app.session.flashBag.has('error') %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            <p>{{ flashMessage }}</p>
+        {% endfor %}
+    </div>
+{% endif %}

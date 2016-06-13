@@ -1,0 +1,367 @@
+{% extends 'CVGooseberryBundle::gooseberry_network.html.twig' %}
+
+{% block addMoreCSS %}
+    <link rel="stylesheet" href="{{ asset('bundles/cvgooseberry/css/s3.upload.css') }}">
+{% endblock %}
+
+{% block title %}
+    {% trans %}Gooseberry - Apply Loan{% endtrans %}
+{% endblock %}
+
+{% block bodyHeader %}
+    {% include('CVGooseberryBundle:Common:header.html.twig') with { active :'apply_loan' } %}
+{% endblock %}
+
+{% block bodyContent %}
+    <div class="container-fluid content-breather-small" id="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+					<h1 style="float:left;padding:0px 20px">{% trans %}Apply Loan{% endtrans %}</h1>
+                </div><!-- End of column one -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('cv_gooseberry_home', {'network': network.urlname}) }}">{% trans %}Home{% endtrans %}</a></li>
+                        <li class="active">{% trans %}Apply Loan{% endtrans %}</li>
+                    </ol>
+                </div><!-- End of column two -->
+            </div><!-- End of row -->   
+        </div><!-- End of container -->
+    </div><!-- End of fluid container -->
+			
+	<div class="container">
+		<form action="" id="applyLoanForm" name="applyLoanForm" class="form-horizontal" method="post" accept-charset="utf-8">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group input-group">
+						<label for="companyLegalName" class="col-md-5 control-label">{% trans %}Company Legal Name{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.name,{'attr':{'id':'companyLegalName', 'class':'form-control input-lg','placeholder':'Your company name'|trans, 'data-parsley-required':'true'}})}}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="startDate" class="col-md-5 control-label">{% trans %}Start Date{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.opening_date,{'attr':{'class':'form-control input-lg','placeholder':'DD/MM/YYYY'}})}}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label class="col-md-5 control-label" for="interestRate">{% trans %}Interest rate{% endtrans %}</label>
+						<div class="col-md-7">
+							<div class="input-group has-feedback">
+								<input type="number" name="opportunity_form[interest_rate]" class="form-control input-lg" id="interestRate" data-parsley-range="[0, 100]" data-parsley-type="integer" placeholder="{% trans %}Type number from 0 to 100{% endtrans %}">
+								<span class="percent" aria-hidden="true">%</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label class="col-md-5 control-label" for="interestPaymentPeriod">{% trans %}Interest Payment period{% endtrans %}</label>
+						<div class="col-md-7">
+							<div class="input-group">
+                                {{form_widget(form.interest_payment_period,{'attr':{'class':'form-control input-lg'}})}}
+							</div>
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label class="col-md-5 control-label" for="collateralValue">{% trans %}Collateral value{% endtrans %}</label>
+						<div class="col-md-7">
+							<div class="input-group">
+                                {{form_widget(form.collateral,{'attr':{'class':'form-control input-lg','placeholder':'Type value'|trans}})}}
+							</div>
+						</div>
+					</div>
+                    <div class="form-group input-group">
+                        <label class="col-md-5 control-label" for="logo">{% trans %}Logo{% endtrans %}</label>
+                        <div class="col-md-7">
+                            <div class="fileinput-button upload-signed" id="logoBox">
+                                <button name='upload' class='btn branding-background btn-lg'><i class="icon" data-icon="&#xe009;"></i></button>
+                                <input id="file_logo" type="file" name="file_logo" class="s3_upload" signUrl = "{{ path('cv_smartermoney_add_opportunity_signput',{'network':network.urlname, 'id':uniqueID}) }}"  data-parsley-class-handler="#logoBox" />
+                                {{ form_widget(form.logo) }}
+                                <div class="upload_status">
+                                    <div class="upload_info"><strong class="upload_name"></strong> - <span class="upload_text"></span></div>
+                                    <div class="progress_bar"><div class="percent"><span>0%</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group input-group">
+                        <label class="col-md-5 control-label" for="businessPlan">{% trans %}Financial Statements{% endtrans %}</label>
+                        <div class="col-md-7">
+                            <div class="fileinput-button upload-signed" id="financial_statement">
+                                <button name='upload' class='btn branding-background btn-lg'><i class="icon" data-icon="&#xe009;"></i></button>
+                                <input id="file_financial_statement" type="file" name="financial_statement" class="s3_upload" signUrl = "{{ path('cv_smartermoney_add_opportunity_signput',{'network':network.urlname, 'id':uniqueID}) }}"  data-parsley-class-handler="#financial_statement" userCallback="setFinancialStatements"/>
+                                {{ form_widget(form.fina_financial_statement) }}
+                                <div class="upload_status">
+                                    <div class="upload_info"><strong class="upload_name"></strong> - <span class="upload_text"></span></div>
+                                    <div class="progress_bar"><div class="percent"><span>0%</span></div></div>
+                                </div>
+                            </div>
+                            <div id="doc_name_sec" class="" style="display: none;">
+
+                            </div>
+                        </div>
+                    </div>
+                    {#<div class="form-group input-group">
+                        <label class="col-md-5 control-label" for="amortizationSchedule">{% trans %}Amortization Schedule{% endtrans %}</label>
+                        <div class="col-md-7">
+                        	<div class="fileinput-button upload-signed" id="amortizationScheduleBox">
+	                            <button name='upload' class='btn branding-background btn-lg'><i class="icon" data-icon="&#xe009;"></i></button>
+	                            <input id="file_amortizationSchedule" type="file" name="amortizationSchedule" class="s3_upload" signUrl = "{{ path('cv_smartermoney_add_opportunity_signput',{'network':network.urlname, 'id':uniqueID}) }}"  data-parsley-required="true" data-parsley-class-handler="#amortizationScheduleBox" />
+                                {{ form_widget(form.amortization_schedule) }}
+	                            <div class="upload_status">
+	                                <div class="upload_info"><strong class="upload_name"></strong> - <span class="upload_text"></span></div>
+	                                <div class="progress_bar"><div class="percent"><span>0%</span></div></div>
+	                            </div>
+                            </div>
+	                    </div>
+                    </div>
+                    <div class="form-group input-group">
+                        <label class="col-md-5 control-label" for="balanceSheet">{% trans %}Balance Sheet{% endtrans %}</label>
+                        <div class="col-md-7">
+                        	<div class="fileinput-button upload-signed" id="balanceSheetBox">
+	                            <button name='upload' class='btn branding-background btn-lg'><i class="icon" data-icon="&#xe009;"></i></button>
+	                            <input id="file_balanceSheet" type="file" name="balanceSheet" class="s3_upload" signUrl = "{{ path('cv_smartermoney_add_opportunity_signput',{'network':network.urlname, 'id':uniqueID}) }}"  data-parsley-required="true" data-parsley-class-handler="#balanceSheetBox" />
+                                {{ form_widget(form.balance_sheet) }}
+	                            <div class="upload_status">
+	                                <div class="upload_info"><strong class="upload_name"></strong> - <span class="upload_text"></span></div>
+	                                <div class="progress_bar"><div class="percent"><span>0%</span></div></div>
+	                            </div>
+                            </div>
+	                    </div>
+                    </div>#}
+					<div class="form-group input-group">
+						<label for="detailedDescription" class="col-md-5 control-label">{% trans %}Detailed description{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.detail,{'attr':{'class':'form-control input-lg','placeholder':'Typing...'|trans}})}}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="useOfFunds" class="col-md-5 control-label">{% trans %}Use of funds{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.use_of_funds,{'attr':{'class':'form-control input-lg','placeholder':'Typing...'|trans}})}}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="paymentSources" class="col-md-5 control-label">{% trans %}Payment sources{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.payment_sources,{'attr':{'class':'form-control input-lg','placeholder':'Typing...'|trans}})}}
+						</div>
+					</div>
+				</div><!-- End of column -->
+				<div class="col-md-6">
+					<div class="form-group input-group">
+						<label for="industry" class="col-md-5 control-label">{% trans %}Industry{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.industry_name,{'attr':{'class':'form-control input-lg','placeholder':'Type industry'|trans}})}}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="endDate" class="col-md-5 control-label">{% trans %}End Date{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.closing_date,{'attr':{'class':'form-control input-lg','placeholder':'DD/MM/YYYY'}})}}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="interestOnlyPeriod" class="col-md-5 control-label">{% trans %}Interest-only period{% endtrans %}</label>
+						<div class="col-md-7">
+                            <div class="input-group">
+                                {{form_widget(form.interest_only_period,{'attr':{'class':'form-control input-lg'}})}}
+                            </div>
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="term" class="col-md-5 control-label">{% trans %}Term (months){% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.term,{'attr':{'class':'form-control input-lg','placeholder':'Type term'|trans}})}}
+						</div>
+					</div>
+					{#<div class="form-group input-group">
+						<label for="convertibleNon" class="col-md-5 control-label">{% trans %}Convertible/non-convertible{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.convertible_non_convertible,{'attr':{'class':'form-control input-lg', 'data-parsley-required':'true'}})}}
+						</div>
+					</div>
+                    <div class="form-group input-group">
+                        <label class="col-md-5 control-label" for="incomeStatement">{% trans %}Income Statement{% endtrans %}</label>
+                        <div class="col-md-7">
+                        	<div class="fileinput-button upload-signed" id="incomeStatementBox">
+	                            <button name='upload' class='btn branding-background btn-lg'><i class="icon" data-icon="&#xe009;"></i></button>
+	                            <input id="file_incomeStatement" type="file" name="incomeStatement" class="s3_upload" signUrl = "{{ path('cv_smartermoney_add_opportunity_signput',{'network':network.urlname, 'id':uniqueID}) }}"  data-parsley-required="true" data-parsley-class-handler="#incomeStatementBox" />
+                                {{ form_widget(form.income_statement) }}
+	                            <div class="upload_status">
+	                                <div class="upload_info"><strong class="upload_name"></strong> - <span class="upload_text"></span></div>
+	                                <div class="progress_bar"><div class="percent"><span>0%</span></div></div>
+	                            </div>
+                            </div>
+	                    </div>
+                    </div>#}
+                    <div class="form-group input-group">
+                        <label class="col-md-5 control-label" for="businessPlan">{% trans %}Business Plan{% endtrans %}</label>
+                        <div class="col-md-7">
+                        	<div class="fileinput-button upload-signed" id="businessPlanBox">
+	                            <button name='upload' class='btn branding-background btn-lg'><i class="icon" data-icon="&#xe009;"></i></button>
+	                            <input id="file_businessPlan" type="file" name="businessPlan" class="s3_upload" signUrl = "{{ path('cv_smartermoney_add_opportunity_signput',{'network':network.urlname, 'id':uniqueID}) }}" data-parsley-class-handler="#businessPlanBox" />
+                                {{ form_widget(form.business_plan) }}
+	                            <div class="upload_status">
+	                                <div class="upload_info"><strong class="upload_name"></strong> - <span class="upload_text"></span></div>
+	                                <div class="progress_bar"><div class="percent"><span>0%</span></div></div>
+	                            </div>
+                            </div>
+	                    </div>
+                    </div>
+					<div class="form-group input-group">
+						<label for="team" class="col-md-5 control-label">{% trans %}Team{% endtrans %}</label>
+						<div class="col-md-7">
+							<a href="#modal-addTeamMember" class="add-people" data-toggle="modal" data-target="#modal-addTeamMember"><span class="glyphicon glyphicon-plus"></span> {% trans %} Add team member {% endtrans %}</a>
+							<ul class="list-team"></ul><!-- End of list-team collapses -->
+							<input type="text" id="team" class="form-control" style="display:none;">
+                            {{ form_widget(form.team) }}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="risksAndMitigants" class="col-md-5 control-label">{% trans %}Risks and mitigants{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.risks_and_mitigants,{'attr':{'class':'form-control input-lg','placeholder':'Typing...'|trans}})}}
+						</div>
+					</div>
+					<div class="form-group input-group">
+						<label for="QASection" class="col-md-5 control-label">{% trans %}Q&A Section{% endtrans %}</label>
+						<div class="col-md-7">
+                            {{form_widget(form.qna,{'attr':{'class':'form-control input-lg','placeholder':'Typing...'|trans}})}}
+						</div>
+					</div>
+
+				</div><!-- End of column -->
+			</div><!-- End of row -->
+            <div class="text-center mt20">
+                <input type="submit" id="applyLoanBtn" class="btn branding-background btn-lg" value="{% trans %}Submit{% endtrans %}">
+            </div>
+		</form>
+	</div><!-- End of container -->
+	<!-- begin:modal-forgot-password -->
+	<div class="modal fade" id="modal-addTeamMember" tabindex="-1" role="dialog" aria-labelledby="modal-addTeamMember" aria-hidden="true">
+	  <div class="modal-dialog modal-sm">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">{% trans %}Add team member{% endtrans %}</h4>
+	      </div>
+	      <form action="" role="form" name="addTeamMemberForm" id="addTeamMemberForm" method="">
+	        <div class="modal-body">
+	          <div class="form-group input-group">
+	            <label for="memberName">{% trans %}Name{% endtrans %}</label>
+	            <input id="memberName" name="memberName" type="text" class="form-control input-lg" placeholder="{% trans %}Enter your member{% endtrans %}">
+	          </div>
+	          <div class="form-group input-group">
+	            <label for="descriptionMember">{% trans %}Description{% endtrans %}</label>
+	            <textarea name="descriptionMember" id="descriptionMember" class="form-control input-lg" placeholder="{% trans %}Typing...{% endtrans %}"></textarea>
+	          </div>
+	        </div>
+	        <div class="modal-footer">
+	          <input type="submit" id="addTeamMemberBtn" class="btn btn-block branding-background btn-lg" value="{% trans %}Add member{% endtrans %}">
+	        </div>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+	<!-- end:modal-forgot-password -->
+{% endblock %}
+
+{% block addMoreJS %}
+    <script src="{{ asset('bundles/cvgooseberry/js/s3.upload.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/bootstrap/bootstrap.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/css3-animate-it.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/bootstrap-hover-dropdown.js') }}"></script>
+    <script src="{{ asset('bundles/cvgooseberry/js/scripts.js') }}"></script>
+    <script type="text/javascript">
+		var doc_count = 0;
+		function setFinancialStatements() {
+			$('#doc_name_sec').show();
+			var fileName = $('#file_financial_statement').attr('filename');
+			var fileS3Url = $('#file_financial_statement').attr('s3_url');
+			formatFileName = fileName.replace(/\..*/,'')
+			formatFileName = formatFileName.replace(/[-_]/g, " ");
+			var doc_field =
+				'<span id="financial_doc'+doc_count+'">'+
+				'<br/><label class="">'+formatFileName+'</label>'+
+				'<input type="hidden" id="doc_file_name'+doc_count+'" value="'+fileName+'" </input>'+
+				'<input type="hidden" id="doc_file_s3_url'+doc_count+'" value="'+fileS3Url+'" </input>'+
+				'</span>';
+			$('#doc_name_sec').after(doc_field);
+            doc_count = doc_count + 1;
+		}
+
+		var team = '';
+		var team_holder = [];
+		var indx = 0;
+		
+        $(function() {
+            $( "#opportunity_form_opening_date" ).datepicker();
+            $( "#opportunity_form_closing_date" ).datepicker();
+            $('#applyLoanForm').submit(function(e){
+                if($('#file_logo').attr('filename') != undefined){
+                    var file_logo_json = '{"name":"'+$('#file_logo').attr('filename')
+                            +'","s3_url":"'+$('#file_logo').attr('s3_url').match(/\/\/.*\/(.*\/.*\/.*)\?.*/)[1]
+                            +'"}';
+                    $('#opportunity_form_logo').val(file_logo_json);
+                }
+
+                if($('#file_amortizationSchedule').attr('filename') != undefined){
+                    var file_ams_json = '{"name":"'+$('#file_amortizationSchedule').attr('filename')
+                            +'","s3_url":"'+$('#file_amortizationSchedule').attr('s3_url').match(/\/\/.*\/(.*\/.*\/.*)\?.*/)[1]
+                            +'"}';
+                    $('#opportunity_form_amortization_schedule').val(file_ams_json);
+                }
+
+                if($('#file_balanceSheet').attr('filename') != undefined){
+                    var file_bas_json = '{"name":"'+$('#file_balanceSheet').attr('filename')
+                            +'","s3_url":"'+$('#file_balanceSheet').attr('s3_url').match(/\/\/.*\/(.*\/.*\/.*)\?.*/)[1]
+                            +'"}';
+                    $('#opportunity_form_balance_sheet').val(file_bas_json);
+                }
+
+                if($('#file_businessPlan').attr('filename') != undefined){
+                    var file_bup_json = '{"name":"'+$('#file_businessPlan').attr('filename')
+                            +'","s3_url":"'+$('#file_businessPlan').attr('s3_url').match(/\/\/.*\/(.*\/.*\/.*)\?.*/)[1]
+                            +'"}';
+                    $('#opportunity_form_business_plan').val(file_bup_json);
+                }
+
+                if($('#file_incomeStatement').attr('filename') != undefined){
+                    var file_ins_json = '{"name":"'+$('#file_incomeStatement').attr('filename')
+                            +'","s3_url":"'+$('#file_incomeStatement').attr('s3_url').match(/\/\/.*\/(.*\/.*\/.*)\?.*/)[1]
+                            +'"}';
+                    $('#opportunity_form_income_statement').val(file_ins_json);
+                }
+				
+				$("#opportunity_form_team").val(team);
+				
+				var financial_docs_array = [];
+				for(i=0; i<doc_count; i++){
+					var doc_file_name = $('#doc_file_name'+i).val();
+					var doc_file_url = $('#doc_file_s3_url'+i).val();
+					if (doc_file_url != '') {
+						financial_docs_array.push({
+							"name": doc_file_name,
+							"s3_url": doc_file_url.match(/\/\/.*\/(.*\/.*\/.*)\?.*/)[1]
+						});
+					}
+				}
+				var financialDocsJSONString = JSON.stringify(financial_docs_array);
+				$('#opportunity_form_fina_financial_statement').val(financialDocsJSONString);
+            });
+
+			$("#addTeamMemberBtn").click(function(){
+				var name = $("#memberName").val();
+				var description = $("#descriptionMember").val();
+				var json_obj = {};
+				json_obj.id = indx;
+				json_obj.name = name;
+				json_obj.desc = description;
+				team_holder.push(json_obj);
+				team = JSON.stringify(team_holder);
+				indx++;
+			});
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,95 @@
+/* gooseberry.css */
+input.parsley-success,
+select.parsley-success,
+textarea.parsley-success {
+  color: #468847;
+  background-color: #DFF0D8;
+  border: 1px solid #D6E9C6;
+}
+
+input.parsley-error,
+select.parsley-error,
+textarea.parsley-error {
+  color: #B94A48;
+  background-color: #F2DEDE;
+  border: 1px solid #EED3D7;
+}
+
+.parsley-errors-list {
+  margin: 2px 0 3px;
+  padding: 0;
+  list-style-type: none;
+  font-size: 0.9em;
+  line-height: 0.9em;
+  opacity: 0;
+  text-align: left;
+
+  transition: all .3s ease-in;
+  -o-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+}
+
+.parsley-errors-list.filled {
+  opacity: 1;
+}
+
+.padB-25 {
+  padding-bottom: 25px;
+}
+
+.line-list .row {
+  padding: 8px 0;
+}
+
+.line-list .row .col-xs-4 {
+  font-weight: bold;
+}
+
+@-moz-document url-prefix() { 
+  input[type=file] {
+     padding: 0px;
+  }
+}
+
+.img-signined {
+  display: inline-block;
+  width: 30px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-top: -5px;
+  margin-right: 5px;
+  font-size: 28px;
+  text-align: center;
+}
+
+.add-people {
+  display: block;
+  padding-top: 11px;
+  padding-bottom: 3px;
+  outline: none !important;
+}
+.add-people:hover {
+  text-decoration: none;
+}
+
+.list-team {
+  list-style: none;
+  padding: 0;
+}
+.list-team li {
+  margin-right: 20px;
+  position: relative;
+}
+.list-team li > .glyphicon-remove {
+  position: absolute;
+  right: -20px;
+  top: 15px;
+  cursor: pointer;
+}
+.list-team li > .glyphicon-remove:hover {
+  color: red;
+}
+.list-team .panel {
+  margin-bottom: 2px;
+}

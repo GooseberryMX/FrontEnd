@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{% block title %}Gooseberry{% endblock %}</title>
+    
+
+    <!-- core CSS -->
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/jquery-ui.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/animations.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/lightbox.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/owl.carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/layerslider.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/flexslider.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/outline-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/vidall.css') }}"> 
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/gooseberry.css') }}">    
+    
+    {% block stylesheets %}{% endblock %}
+    <!--[if lt IE 9]>
+    <script src="{{ asset('bundles/app/js/html5shiv.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/respond.min.js') }}"></script>
+    <![endif]-->
+	<link rel="icon" type="image/x-icon" href="{{ asset('favicons/gooseberry_favicon.png') }}" />
+</head>
+<body>
+{% block notice %}
+    <div class="">
+        {% if app.session.flashbag.has('errors') %}
+            <div class="alert alert-danger" style="margin-bottom:0">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {% for errorMessage in app.session.flashbag.get('errors') %}
+                    {{ errorMessage|raw() }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if app.session.flashbag.has('info') %}
+            <div class="alert alert-info" style="margin-bottom:0">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {% for infoMessage in app.session.flashbag.get('info') %}
+                    {{ infoMessage }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="vidall-wrapper"> <!-- Start of global wrapper, this wrapper closes in the sites footer -->
+        {% block indexcopyright %}{% endblock %}
+        {% block message %}
+            {% for flashMessage in app.session.flashbag.get('cv_error') %}
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <span class="text-danger">{{ flashMessage }}</span>
+                </div>
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('cv_msg') %}
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <span>{{ flashMessage }}</span>
+                </div>
+            {% endfor %}
+        {% endblock %}
+
+        {% block bodyHeader %}{% endblock %}
+
+        <!-- Content starts -->
+        {% block bodyContent %}{% endblock %}
+
+        {% block bodyFooter %}
+            {% include('AppBundle:Common:footer.html.twig')%}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+
+{% block javascripts %}
+    <!-- JS -->
+    <!--[if lt IE 9]>
+        <script src="{{ asset('bundles/cvgooseberry/js/html5shiv.js') }}"></script>
+        <script src="{{ asset('bundles/cvgooseberry/js/respond.src.js') }}"></script>
+    <![endif]-->
+
+    <script src="{{ asset('bundles/app/js/jquery-1.11.1.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/jquery-ui-1.11.4.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/jquery.cookie.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/parsley.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/parsley.remote.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/main.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Show or hide the sticky footer button
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 200) {
+                    $('.go-top').fadeIn(200);
+                } else {
+                    $('.go-top').fadeOut(200);
+                }
+            });
+
+            // Animate the scroll to top
+            $('.go-top').click(function(event) {
+                event.preventDefault();
+                
+                $('html, body').animate({scrollTop: 0}, 300);
+            })
+            
+            // open sign in box
+            var hash = $(location).attr('hash');
+            if (hash) {
+                var ref = hash.substr(1);
+                if (ref == 'signin') {
+                    $(".signin").click();
+                }
+            }
+            var currLang = '{{ app.request.getLocale() }}',
+            	urlRedirect = '{{ path('cv_gooseberry_change_language',{'network': 'gooseberry','_locale':'CV_LOCALE'}) }}';
+            $('#languages select')
+                    .val(currLang)
+                    .change(function(){                        
+                        if (currLang != $(this).val()) {
+                             $.ajax({
+                                 type: 'GET',
+                                 cache: true,
+                                 dataType: 'json',
+                                 url: urlRedirect.replace('CV_LOCALE',$(this).val()),
+                                 success: function (res) {
+                                     if(res.status === 200)
+                                         location.href = res.linkRedirect;
+                                     else
+                                         console.log('Change failure');
+                                 }
+                             });
+                         }
+                    });
+        });
+    </script>
+
+    {% block addMoreJS %}{% endblock %}
+{% endblock %}
+
+</body>
+</html>

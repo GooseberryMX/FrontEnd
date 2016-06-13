@@ -1,0 +1,142 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block bodyHeader %}
+    {% include('AppBundle:Common:header.html.twig') with { active :'home' } %}
+{% endblock %}
+
+{% block bodyContent %}
+	<!-- Layer slider code begins -->
+
+	<div class="container-fluid slider">
+		<div id="layerslider" style="width: 100%; height: 400px;">
+    		<div class="ls-slide" data-ls="slidedelay: 10000;"><!-- start of first slide -->
+				<!-- slide background -->
+				<img src="{{asset('bundles/app/images/slider_images/bg1.jpg')}}" class="ls-bg" alt="Slide background">
+				<!-- End of slide background -->
+		
+			</div><!-- End of first slide -->
+      	</div><!-- End of layer slider container -->
+	</div><!-- End of fluid container housing the slider -->
+
+	<!-- Start of blog preview section -->
+
+	<div id="overlays" class="overlays container-fluid content-breather hero-unit">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<h3>{% trans %}Featured Live Investments{% endtrans %}</h3>
+				</div><!-- End of column -->
+			</div><!-- End of row -->	
+		</div><!-- End of container -->
+		<div class="container">
+			<div class="row">
+                {% if offerings is defined and offerings is not empty %}
+                {% for offering in offerings|default([]) %}
+					{% set progress = offering.raisedPercent %}
+					{% set closing_date = offering.closeDate %}
+					{% set investors_count = offering.investmentCount %}
+				<div class="col-sm-4 animatedParent animateOnce" data-appear-top-offset='-200' >
+					<div class="animated fadeInLeftShort ">
+						<div class="img">
+                            {% if offering.organization.logo is defined %}
+							<img class="img-rounded-small"
+							src="{{ offering.organization.logo.url }}" alt="image">
+                            {% endif %}
+							<div class="overlay">
+								<a href="{{ path('equity_overview', {'offering_id':offering.id}) }}" class="expand"><i class="icon" data-icon="&#xe067;"></i></a>
+								<a class="close-overlay hidden">x</a>
+							</div><!-- End of overlay -->
+						</div><!-- End of img class  -->
+						<h4 class="text-center"><a href="{{ path('equity_overview', {'offering_id':offering.id}) }}">{{ offering.organization.displayName }}</a></h4>
+						<div class="progress" style="margin:0px 10px">
+  							<div class="progress-bar" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" style="width:87%">
+    							<span>{{ progress }}{% trans %}% Funded{% endtrans %}</span>
+  							</div>
+						</div>
+						<hr class="underline">
+						<ul class="blog-meta">
+							<li>{{ offering.organization.sector }}</li>
+							<li><i class="icon" data-icon="&#xe082;"></i><em class="heavy"> {{ closing_date | days_left }}</em> {% trans %}day(s) left{% endtrans %}&nbsp;&nbsp;</li>
+							<li><i class="icon" data-icon="&#xe057;"></i>
+							<em class="heavy">{{ investors_count }}</em> {% trans %}Investor(s){% endtrans %}</li>
+						</ul>
+					</div><!-- End of animated wrapper -->
+				</div><!-- End of column -->
+                {% endfor %}
+                {% endif %}
+			</div><!-- End of row -->
+		</div><!-- End of container -->
+	</div><!-- End of main fluid container, housing grey background, contains the blog preview -->
+
+{% endblock %}
+
+{% block addMoreJS %}
+	<script src="{{ asset('bundles/app/js/bootstrap/bootstrap.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/css3-animate-it.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/owl.carousel.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/bootstrap-hover-dropdown.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/modernizr.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/greensock.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/layerslider.transitions.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/layerslider.kreaturamedia.jquery.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/backstretch.js') }}"></script>
+	<script src="{{ asset('bundles/app/js/scripts.js') }}"></script>
+    <script type="text/javascript">
+        var modelStatus;
+        $( function(){
+            modelStatus = '{{ modelStatus|default(0) }}';
+            if(modelStatus === 'call-sign-up'){
+                $('#modal-signup').modal('show');
+            }
+            if(modelStatus === 'call-sign-in'){
+                $('#modal-signin').modal('show');
+            }
+            if(modelStatus === 'call-forgot-password') {
+                $('#modal-forgot-password').modal('show');
+            }
+
+
+            $('#modal-signin').on('shown.bs.modal', function() {
+                var remember = $.cookie('remember');
+                if (remember && remember == 'true')
+                {
+                    $('#signInForm input[type="checkbox"]').prop('checked', true);
+                    $('#signInForm input[type="email"]').val($.cookie('email'));
+                    $('#signInForm input[type="password"]').val($.cookie('password'));
+
+                } else {
+                    $('#signInForm input[type="checkbox"]').prop('checked', false);
+                    $('#signInForm input[type="email"]').val('');
+                    $('#signInForm input[type="password"]').val('');
+                }
+                $('#signInForm input[type="submit"]').click( function(){
+                    if($('#signInForm input[type="checkbox"]').prop('checked')){
+                        $.cookie('email', $('#signInForm input[type="email"]').val(), { expires: 14 });
+                        $.cookie('password', $('#signInForm input[type="password"]').val(), { expires: 14 });
+                        $.cookie('remember', true, { expires: 14 });
+                    } else {
+                        $.cookie('email', null);
+                        $.cookie('password', null);
+                        $.cookie('remember', null);
+                    }
+                    console.log('Prepare data done.');
+                });
+            });
+            $('#modal-signup').on('shown.bs.modal', function() {
+                $('#signUpForm input').each( function() {
+                    if($(this).attr('type') === 'checkbox'){
+                        $(this).prop('checked', false);
+                    } else if($(this).attr('type') === 'submit'){
+                    } else {
+                        $(this).val('');
+                    }
+                });
+            });
+            $('#modal-forgot-password').on('shown.bs.modal', function() {
+                if( $('#modal-signin').data('bs.modal')!=='undefined' && $('#modal-signin').data('bs.modal').isShown)
+                    $('#modal-signin').modal('hide');
+            });
+
+        })
+    </script>
+{% endblock %}

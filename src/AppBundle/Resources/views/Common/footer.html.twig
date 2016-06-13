@@ -1,0 +1,142 @@
+<!-- Footer Begins -->
+<div class="container-fluid content-breather" id="footer">
+ 	<div class="container">
+ 		<div class="row">
+ 			<div class="col-md-4" id="map-background">
+				<h3 class="text-underline">{% trans %}Learn more{% endtrans %}</h3>
+				<ul>
+          <li><a href="http://www.gooseberry.com.mx/aprende/faq/" target="_blank" title="">{% trans %}FAQs{% endtrans %}</a></li>
+          <li><a href="http://www.gooseberry.com.mx/aprende/riesgos/" target="_blank" title="">{% trans %}Risks{% endtrans %}</a></li>
+          <li><a href="http://www.gooseberry.com.mx/aprende/biblioteca/" target="_blank" title="">{% trans %}Library{% endtrans %}</a></li>
+        </ul>
+ 			</div><!-- End of column one -->
+	 		<div class="col-md-4">
+ 				<h3 class="text-underline">{% trans %}Legal{% endtrans %}</h3>
+        <ul>
+          <li><a href="http://www.gooseberry.com.mx/terminos-y-condiciones/" target="_blank" title="">{% trans %}Terms & Conditions{% endtrans %}</a></li>
+          <li><a href="http://www.gooseberry.com.mx/aviso-de-privacidad/" target="_blank" title="">{% trans %}Privacy Statement{% endtrans %}</a></li>
+        </ul>
+			</div><!-- End of column two -->
+			<div class="col-md-4">
+				<h3 class="text-underline">{% trans %}Social media{% endtrans %}</h3>
+				<div class="icon-wrap">
+					<a href="https://www.facebook.com/GooseberryMX" target="_blank"><i class="social-icons-lg fa fa-facebook"></i></a>
+					<a href="https://twitter.com/GooseberryMx" target="_blank"><i class="social-icons-lg fa fa-twitter"></i></a>
+					<a href="https://www.linkedin.com/company/gooseberry-mx" target="_blank"><i class="social-icons-lg fa fa-linkedin"></i></a>
+				</div><!-- End of icon wrap -->
+			</div><!-- End of column three -->
+		</div><!-- End of row -->
+ 	</div><!-- End of container -->
+</div><!-- End of fluid container --> 
+<div class="container-fluid content-breather copyright">
+ 	<div class="container">
+ 		<div class="row" id="copyright">
+			<div class="col-md-12 text-center">
+				<img src="{{asset('bundles/app/images/footer_logo.png')}}" alt="footer logo">
+			</div><!-- End of column one -->
+ 		</div><!-- End of row -->
+ 		
+ 		<a href="#" class="go-top"><i class="fa fa-chevron-up fa-2x"></i></a>
+ 		
+ 	</div><!-- End of container -->
+</div><!-- End of fluid container -->
+
+<!-- begin:modal-signin -->
+<div class="modal fade" id="modal-signin" tabindex="-1" role="dialog" aria-labelledby="modal-signin" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">{% trans %}Sign in{% endtrans %}</h4>
+      </div>
+      
+	<form role="form" id="form_sign_in" action="{{ path('sign_in') }}" method="POST">
+        <div class="modal-body">
+            <div class="form-group input-group">
+              <label for="emailAddress">{% trans %}Email address{% endtrans %}</label>
+            <input type="email" id="sign_in_type_email" name="sign_in_type[email]" required="required" class="form-control" placeholder="{% trans %}Email address{% endtrans %}">
+            </div>
+            <div class="form-group input-group">
+              <label for="password">{% trans %}Password{% endtrans %}</label>
+            <input type="password" id="sign_in_type_password" name="sign_in_type[password]" required="required" class="form-control" placeholder="{% trans %}Password{% endtrans %}">
+            </div>
+            <p class="text-danger">{{ errMessage|default('') }}</p>
+        </div>
+        <div class="modal-footer">
+          <p><a href="#modal-forgot-password"  data-toggle="modal" data-target="#modal-forgot-password">{% trans %}Forgot password?{% endtrans %}</a></p>
+          <input type="submit" id="signInBtn" class="btn btn-block branding-background btn-lg" value="{% trans %}Log in{% endtrans %}">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end:modal-signin -->
+
+<!-- begin:modal-signup -->
+<div class="modal fade" id="modal-signup" tabindex="-1" role="dialog" aria-labelledby="modal-signup" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">{% trans %}Sign up{% endtrans %}</h4>
+      </div>
+      <form action="{{ path('sign_up') }}" role="form" name="signUpForm" id="signUpForm" method="post">
+        <div class="modal-body">
+          <div class="form-group input-group">
+            <input type="text" id="sign_up_type_given_name" name="sign_up_type[given_name]" required="required" class="form-control" placeholder="{% trans %}First Name{% endtrans %}">
+          </div>
+          <div class="form-group input-group">
+            <input type="text" id="sign_up_type_family_name" name="sign_up_type[family_name]" required="required" class="form-control" placeholder="{% trans %}Last Name{% endtrans %}">
+          </div>
+          <div class="form-group input-group">
+            <input type="email" id="sign_up_type_email" name="sign_up_type[email]" required="required" class="form-control" placeholder="{% trans %}Email address{% endtrans %}">
+          </div>
+          <div class="form-group input-group">
+            <input type="password" id="sign_up_type_password" name="sign_up_type[password]" required="required" class="form-control" placeholder="{% trans %}Password{% endtrans %}">
+          </div>
+          <div class="form-group input-group">
+            <input type="password" id="sign_up_type_password" name="sign_up_type[password]" required="required" class="form-control" placeholder="{% trans %}Confirm Password{% endtrans %}">
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" data-parsley-required="true" name="agree"> {% trans %}Agree to our{% endtrans %}
+			  {% if app.request.cookies.get('_locale') != 'ru' %}
+			  <a href="http://gooseberry.com.mx/" target="_blank">{% trans %}terms of use{% endtrans %}</a> and 
+			  <a href="http://gooseberry.com.mx/" target="_blank">{% trans %}privacy policy{% endtrans %}</a>
+			  {% endif %}
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!-- <p>Already have account ? <a href="#modal-signin" data-toggle="modal" data-target="#modal-signin">Sign in here.</a></p> -->
+          <input type="submit" id="signUpBtn" class="btn btn-block branding-background btn-lg" value="{% trans %}Sign up{% endtrans %}">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end:modal-signup -->
+
+<!-- begin:modal-forgot-password -->
+<div class="modal fade" id="modal-forgot-password" tabindex="-1" role="dialog" aria-labelledby="modal-forgot-password" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">{% trans %}Get password{% endtrans %}</h4>
+      </div>
+      <form action="{{ path('forgot_password') }}" role="form" name="forgotPasswordForm" id="forgotPasswordForm" method="post">
+        <div class="modal-body">
+          <div class="form-group input-group">
+            <label for="emailAddress">{% trans %}Email address{% endtrans %}</label>
+            <input id="loginEmail" name="email" type="email" class="form-control input-lg" data-parsley-required="true" data-parsley-type="email" placeholder="{% trans %}Enter email{% endtrans %}">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" id="forgotPasswordBtn" class="btn btn-block branding-background btn-lg" value="{% trans %}Confirm{% endtrans %}">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end:modal-forgot-password -->

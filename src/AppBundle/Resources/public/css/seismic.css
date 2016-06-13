@@ -1,0 +1,39 @@
+.m0{
+    margin: 0px;
+}
+.mb10 {
+    margin-bottom: 10px;
+}
+.mb20{
+    margin-bottom: 20px;
+}
+.nav-left.nav > li > a:hover{
+    color: #333;
+}
+.mw60px{
+    max-width: 60px;
+}
+.error {color: #ff0000;}
+.fileinput-button {
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+.fileinput-button input {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	margin: 0px;
+	width: 100%;
+	height: 34px;
+	opacity: 0;
+	cursor: pointer;
+	direction: ltr;
+}
+.upload_status {
+    display:none;
+    margin: 10px 0 0;
+}
+.fileinput-button .btn.btn-primary {
+    width: 100%;
+}
